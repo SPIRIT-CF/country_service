@@ -8,13 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
-import java.util.List;
 
 @Service
 public class CountryService {
 
-    private Uploader<URL> urlUploader;
-    private CountryRepository repository;
+    private final Uploader<URL> urlUploader;
+    private final CountryRepository repository;
 
     @Autowired
     public CountryService(Uploader<URL> urlUploader, CountryRepository repository) {
@@ -26,18 +25,18 @@ public class CountryService {
         return repository.getCountryByNameIgnoreCase(name);
     }
 
-/*    public List<Country> getCountriesByDomains(List<String> domains) {
-        return repository.findCountriesByTopLevelDomains(domains);
-    }*/
-
-    public boolean reloadCountries() {
-        repository.deleteAll();
-        return urlUploader.upload();
+    public Country getCountryByDomain(String domain) {
+        return repository.findCountryByTopLevelDomain(domain);
     }
 
-    public boolean reloadCountries(URL source) {
+    public void reloadCountries() {
         repository.deleteAll();
-        return urlUploader.upload();
+        urlUploader.upload();
+    }
+
+    public void reloadCountries(URL source) {
+        repository.deleteAll();
+        urlUploader.upload(source);
     }
 }
 
